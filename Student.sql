@@ -14,8 +14,8 @@ CREATE TABLE s_student(ssn varchar(6) PRIMARY KEY, name varchar(20), major varch
 CREATE TABLE s_course(course_no varchar(12) PRIMARY KEY, course_name varchar(25), department varchar(25));
 CREATE TABLE s_text(book_isbn varchar(9) PRIMARY KEY, book_title varchar(20), publisher varchar(20), author varchar(20));
 
-CREATE TABLE s_enroll(ssn varchar(6) references student(ssn), course_no varchar(12) references course(course_no), quarter number(2), grade number(2));
-CREATE TABLE s_book(course_no varchar(12) references course(course_no), quarter number(2), book_isbn varchar(9) references text(book_isbn));
+CREATE TABLE s_enroll(ssn varchar(6) REFERENCES s_student(ssn), course_no varchar(12) REFERENCES course(course_no), quarter number(2), grade number(2));
+CREATE TABLE s_book(course_no varchar(12) REFERENCES s_course(course_no), quarter number(2), book_isbn varchar(9) REFERENCES text(book_isbn));
 
 DESC s_student;
 INSERT INTO s_student VALUES('&ssn', '&name', '&major', '&bdate');
@@ -71,7 +71,6 @@ COMMIT;
 
 
 -- 1. List the number of courses taken by all students named joe in QUARTER-1 --
-
 SELECT * FROM s_course WHERE course_no IN (SELECT course_no FROM s_enroll WHERE ssn IN
 (SELECT ssn FROM s_student WHERE name='Joe') ); 
 
@@ -90,7 +89,6 @@ END;
 /
 
 -- 2. Produce a list of textbooks(coursenumber,book-isbn,book-title etc) for courses offered by cs department that have used more than two books. --
-
 SELECT book_isbn, book_title FROM s_text WHERE book_isbn IN (SELECT book_isbn FROM s_book 
 WHERE course_no IN (SELECT course_no FROM s_course WHERE department='CS'));
 
@@ -123,7 +121,6 @@ END;
 /
 
 -- 3. List any department that has all its books published by "pearson". --
-
 SELECT * FROM s_course WHERE course_no IN ( SELECT course_no FROM s_book WHERE book_isbn IN 
 (SELECT book_isbn FROM s_text WHERE publisher='Pearson'));
 
@@ -164,9 +161,7 @@ END;
 /
 
 -- 4. Create a trigger that prints the name of the book when the isbn number of the book is changed. --
-
 SET serveroutput ON;
-
 CREATE OR REPLACE TRIGGER isbn BEFORE UPDATE OF book_isbn ON s_text
 FOR EACH ROW
 BEGIN

@@ -1,3 +1,5 @@
+-- HOSPITAL DATABASE APPLICATION --
+
 CREATE TABLE h_patient (patient_id VARCHAR(11) PRIMARY KEY, patient_name VARCHAR(20), dob DATE, age NUMBER, place VARCHAR(20));
 CREATE TABLE h_doctor (doc_id VARCHAR(8) PRIMARY KEY, specialization VARCHAR(15), salary INT);
 
